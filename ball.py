@@ -6,13 +6,12 @@ import scipy as sp
 import numpy as np
 import matplotlib.pyplot as plt
 
-
 def vdot(a, b):
-    return sp.dot(a, b)
+    return np.dot(a, b)
 
 
 def vsquare(a):
-    return sp.dot(a, a)
+    return np.dot(a, a)
 
 
 def mag(a):
@@ -29,8 +28,8 @@ class Ball:
     def __init__(self, m=0.0, rad=0.0, pos=[0.0, 0.0], vel=[0.0, 0.0], con=False):
         self._mass = m
         self._radius = rad
-        self._position = sp.array(pos)
-        self._velocity = sp.array(vel)
+        self._position = np.array(pos)
+        self._velocity = np.array(vel)
         self._container = con
         self._patch = plt.Circle([0, 0], 0, fc='None', ec='None')
         if self._container:
@@ -77,8 +76,10 @@ class Ball:
         r_square = vsquare(delr)
         D = (vr**2 - (v_square * (r_square - R**2)))
         dt = 1e9
-        sols = [(-vr - sp.sqrt(D)) / v_square, (-vr + sp.sqrt(D)) / v_square]
-        # print("dt={}".format(sols))
+        sols = []
+        if D >= 0:
+            sols = [(-vr - np.sqrt(D)) / v_square, (-vr + np.sqrt(D)) / v_square]
+
         if D < 0:
             dt = 1e9
         elif self._container or other._container:

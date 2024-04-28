@@ -2,7 +2,6 @@
 Module to simulate collisions between H-atoms in a closed container (with radius = 10*a0) and obtain thermodynamic quantities along with position and velocity distributions.
 """
 
-import scipy as sp
 import numpy as np
 import sys
 import tkinter
@@ -20,7 +19,7 @@ k_B = 1.38064852e-23  # in m^2 kg s^{-2} K^{-1}
 
 
 def maxwell_distribution(v, sigma):
-    f_v = v * sp.exp(- v**2 / (2 * sigma**2)) / (sigma**2)
+    f_v = v * np.exp(- v**2 / (2 * sigma**2)) / (sigma**2)
     return f_v
 
 
@@ -39,9 +38,9 @@ def get_max_energy(T):
 
 def get_random_pos():
     mag = rn.uniform(0, 9 * a0)
-    ang = rn.uniform(-sp.pi, sp.pi)
-    x = mag * sp.cos(ang)
-    y = mag * sp.sin(ang)
+    ang = rn.uniform(-np.pi, np.pi)
+    x = mag * np.cos(ang)
+    y = mag * np.sin(ang)
     # print(x, y)
     return x, y
 
@@ -49,10 +48,10 @@ def get_random_pos():
 def get_random_velocities(m, E):
     vel = []
     for i in range(len(E)):
-        v_mag = sp.sqrt(3 * E[i] / m)
-        ang = rn.uniform(-sp.pi, sp.pi)
-        vx = v_mag * sp.cos(ang)
-        vy = v_mag * sp.sin(ang)
+        v_mag = np.sqrt(3 * E[i] / m)
+        ang = rn.uniform(-np.pi, np.pi)
+        vx = v_mag * np.cos(ang)
+        vy = v_mag * np.sin(ang)
         vel.append([vx, vy])
     return vel
 
@@ -68,7 +67,7 @@ def get_next_collision(balls):
             ball_2 = balls[j]
             time = ball_1.time_to_coll(ball_2)
             if time < min_time:
-                if not sp.isreal(time):
+                if not np.isreal(time):
                     pass
                 else:
                     min_balls = [ball_1, ball_2]
@@ -111,7 +110,7 @@ class Simulation:
                 raise ValueError("Maximum tries reached to find positions. Try lower number of balls.")
 
         E_max = get_max_energy(self.T_intial)
-        self._v_max = sp.sqrt(sp.sqrt(2) * E_max / m_H)
+        self._v_max = np.sqrt(np.sqrt(2) * E_max / m_H)
         energy = []
         for i in range(num - 1):
             E = rn.uniform(0, E_max)
@@ -274,15 +273,15 @@ class Simulation:
                 pos.extend(self.get_relative_position())
                 r.extend(self.get_position_from_origin())
                 v.extend(self.get_velocity())
-            P_mean = sp.mean(P[99:])
-            # sp.savetxt('vel_300K.txt', v)
+            P_mean = np.mean(P[99:])
+            # np.savetxt('vel_300K.txt', v)
             print(P_mean)
             v_hist, edges = np.histogram(v, bins=20, density=True)
             # print(v_hist)
             centers = 0.5 * (edges[1:] + edges[:-1])
-            sigma = sp.sqrt(k_B * self.T_intial / m_H)
+            sigma = np.sqrt(k_B * self.T_intial / m_H)
             popt, pcov = curve_fit(maxwell_distribution, centers, v_hist, p0=sigma)
-            x = sp.linspace(0, centers[-1], 100000)
+            x = np.linspace(0, centers[-1], 100000)
             ax4.plot(p, color='darkorange')
             ax5.plot(E, color='m')
             ax6.plot(P, color='crimson')

@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from simulation import *
 
 
-A = sp.pi * (10 * a0)**2
+A = np.pi * (10 * a0)**2
 N = 20
 
 
@@ -15,9 +15,9 @@ def linear(x, m, c):
     return y
 
 
-P, T = sp.loadtxt('PvsT.csv', skiprows=1, delimiter=',', unpack=True)
+P, T = np.loadtxt('docs/PvsT.csv', skiprows=1, delimiter=',', unpack=True)
 
-lfit, lcov = sp.polyfit(T, P, deg=1, cov=True)
+lfit, lcov = np.polyfit(T, P, deg=1, cov=True)
 print(lfit)
 
 a = - lfit[1] * A**2 / N**2
@@ -28,7 +28,7 @@ m = N * k_B / (A - b * N)
 # print(m)
 # exit()
 print("a = {}, b = {}".format(a, b))
-err = sp.sqrt(sp.diag(lcov))
+err = np.sqrt(np.diag(lcov))
 print(err)
 del_a = err[1] / lfit[1] * a
 del_b = err[0] / lfit[0] * b
@@ -36,7 +36,7 @@ print(del_a)
 print(del_b)
 
 # exit()
-x = sp.linspace(0, 500, 1000000)
+x = np.linnpace(0, 500, 1000000)
 
 plt.scatter(T, P, marker='x', color='r')
 plt.plot(x, lfit[0] * x + lfit[1], 'k--')
